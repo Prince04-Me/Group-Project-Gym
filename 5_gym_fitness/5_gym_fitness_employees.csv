@@ -1,0 +1,16 @@
+EmployeeID,FirstName,LastName,Email,Age,Country,PhoneNumber,HireDate,JobID,Salary,ManagerID,DepartmentID
+1,Thomas,Hofmann,thomas.hofmann@company.com,52,Germany,+49 161 1416085,2015-04-12,General Director,9800.0,,100
+2,Katharina,Wagner,katharina.wagner@company.com,43,Austria,+49 173 5637193,2018-09-01,Manager,7500.0,1,101
+3,Michael,Becker,michael.becker@company.com,46,Switzerland,+49 174 4949120,2019-02-15,Supervisor,7200.0,1,102
+4,Lukas,Fischer,lukas.fischer@company.com,22,Germany,+49 174 8630197,2024-06-15,Fitness Instructor,2600.0,2,101
+5,Laura,Weber,laura.weber@company.com,24,Germany,+49 164 8003348,2024-08-01,Front Desk Representative,2800.0,2,101
+6,Felix,Meyer,felix.meyer@company.com,21,Switzerland,+49 160 2125585,2025-01-10,Front Desk Representative,2500.0,2,101
+7,Sophie,Müller,sophie.müller@company.com,25,Austria,+49 157 3284214,2024-03-01,Personal Trainer,2900.0,3,102
+8,Jonas,Schmidt,jonas.schmidt@company.com,23,Switzerland,+49 168 6498857,2024-11-20,Front Desk Representative,2700.0,3,102
+9,Marie,Schneider,marie.schneider@company.com,26,Austria,+49 154 2057555,2023-10-01,Front Desk Representative,3100.0,3,102
+10,David,Schulz,david.schulz@company.com,34,Austria,+49 157 2797306,2021-05-15,Fitness Instructor,4800.0,2,101
+11,Emma,Hoffmann,emma.hoffmann@company.com,31,Austria,+49 156 2170218,2022-04-01,Front Desk Representative,4600.0,2,101
+12,Jan,Schäfer,jan.schäfer@company.com,38,Austria,+49 160 6208591,2020-01-10,Personal Trainer,5400.0,2,101
+13,Julia,Koch,julia.koch@company.com,35,Austria,+49 173 1924152,2021-11-01,Front Desk Representative,5000.0,3,102
+14,Simon,Bauer,simon.bauer@company.com,32,Switzerland,+49 164 5031087,2022-07-20,Fitness Instructor,4700.0,3,102
+15,Sarah,Richter,sarah.richter@company.com,39,Austria,+49 173 1891183,2020-03-01,Fitness Instructor,5600.0,3,102
