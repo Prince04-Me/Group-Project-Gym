@@ -8,6 +8,3 @@ class Customer(db.Model):
     Age = db.Column(db.Integer)
     BirthDate = db.Column(db.Date)
     Country = db.Column(db.String(50))
-    
-
-#test
