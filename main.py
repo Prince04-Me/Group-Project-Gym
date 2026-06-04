@@ -1,16 +1,31 @@
-# This is a sample Python script.
+from flask import Flask
+from db import db
+# Creating the web app
+app = Flask(__name__)
 
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Connecting Flask to the database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///5_gym_fitness/5_gym_fitness.db.sqlite3'
+# Initialization of the app
+db.init_app(app)
+
+from models import Customer
+
+# Defines a URL route with an intern function
+@app.route('/')
+def home():
+    return 'Welcome to Peak Pulse Fitness!'
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
 
+@app.route('/customers')
+def customers():
+    customers = Customer.query.limit(10).all()
 
-# Press the green button in the gutter to run the script.
+    result = ''
+    for c in customers:
+        result += f'{c.FirstName} {c.LastName}<br>'
+
+        return result
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app.run(debug=True)
