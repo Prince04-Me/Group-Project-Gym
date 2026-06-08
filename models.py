@@ -55,7 +55,7 @@ class Employee(db.Model):
     __tablename__ = 'Employees_data'
 
     EmployeeID   = db.Column(db.Integer, primary_key=True, unique=True)
-    Name         = db.Column(db.String, nullable=False)
+    FirstName    = db.Column(db.String, nullable=False)
     LastName     = db.Column(db.String, nullable=False)
     Email        = db.Column(db.String, nullable=False)
     Age          = db.Column(db.Integer, nullable=False)

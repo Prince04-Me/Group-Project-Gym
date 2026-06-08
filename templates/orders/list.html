@@ -7,6 +7,47 @@
     <a href="{{ url_for('order_create') }}" class="btn btn-success">+ New Order</a>
 </div>
 
+<form method="GET" action="{{ url_for('order_list') }}" class="search-sort-controls">
+
+  {# ── Search bar ── #}
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      name="search"
+      value="{{ search }}"
+      placeholder="Search for keywords..."
+      autocomplete="off"
+    >
+    {% if search %}
+      {# Clear button: resets search but keeps current sort #}
+      <a href="{{ url_for('order_list', sort=sort_by, dir=sort_dir) }}" class="clear-btn">✕</a>
+    {% endif %}
+  </div>
+
+{# Sort-Steuerung #}
+<form method="GET" action="{{ url_for('order_list') }}" class="sort-controls">
+  <label for="sort-select">Sortieren nach:</label>
+
+  <select id="sort-select" name="sort" onchange="this.form.submit()">
+    <option value="id"          {% if sort_by == 'id'          %}selected{% endif %}>ID</option>
+    <option value="customer"    {% if sort_by == 'customer'    %}selected{% endif %}>Kunde</option>
+    <option value="employee"    {% if sort_by == 'employee'    %}selected{% endif %}>Mitarbeiter</option>
+    <option value="description" {% if sort_by == 'description' %}selected{% endif %}>Beschreibung</option>
+    <option value="price"       {% if sort_by == 'price'       %}selected{% endif %}>Preis</option>
+    <option value="amount"      {% if sort_by == 'amount'      %}selected{% endif %}>Menge</option>
+    <option value="date"        {% if sort_by == 'date'        %}selected{% endif %}>Datum</option>
+  </select>
+
+  {# Richtungsbutton: wechselt zwischen asc/desc #}
+  <input type="hidden" name="dir"
+         value="{% if sort_dir == 'asc' %}desc{% else %}asc{% endif %}">
+
+  <button type="submit" class="btn btn-secondary btn-sm" title="Richtung wechseln">
+    {% if sort_dir == 'asc' %} ↑ Aufsteigend {% else %} ↓ Absteigend {% endif %}
+  </button>
+</form>
+
 <table class="table table-striped table-hover">
     <thead class="table-dark">
         <tr>
@@ -25,7 +66,7 @@
         <tr>
             <td>{{ o.OrderID }}</td>
             <td>{{ o.customer.FirstName }} {{ o.customer.LastName }}</td>
-            <td>{{ o.employee.Name }} {{ o.employee.LastName }}</td>
+            <td>{{ o.employee.FirstName }} {{ o.employee.LastName }}</td>
             <td>{{ o.Description }}</td>
             <td>{{ '%.2f' | format(o.Price) }}</td>
             <td>{{ o.Amount }}</td>

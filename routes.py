@@ -3,8 +3,10 @@
 Defines all URL endpoints and WTForms for the CRUD management UI.
 Imports the shared Flask app instance from __init__.py to register routes.
 """
+from pip._internal.commands import search
+
 from __init__ import app, db
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, FloatField, IntegerField
 from wtforms.validators import DataRequired
@@ -64,7 +66,7 @@ def _populate_order_choices(form):
         for c in Customer.query.order_by(Customer.LastName).all()
     ]
     form.EmployeeID.choices = [
-        (e.EmployeeID, f'{e.Name} {e.LastName}')
+        (e.EmployeeID, f'{e.FirstName} {e.LastName}')
         for e in Employee.query.order_by(Employee.LastName).all()
     ]
 
@@ -85,10 +87,69 @@ def home():
 
 @app.route('/customers')
 def customer_list():
-    """Display all customers."""
-    customers    = Customer.query.all()
-    delete_form  = DeleteForm()
-    return render_template('customers/list.html', customers=customers, delete_form=delete_form)
+    """
+    Display all customers with dynamic sorting.
+
+    Accepts optional query parameters:
+        - sort (str): Column key to sort by. Defaults to 'last_name'.
+        - dir  (str): Sort direction, either 'asc' or 'desc'. Defaults to 'asc'.
+        - search (str): Optional search string filtered across all relevant columns.
+
+    Returns:
+        Rendered HTML template with the customer's list and active sort/search state.
+
+    Whitelist of allowed sort keys mapped to the corresponding Customer model column.
+    All columns belong to the Customer table, so no JOIN is required.
+    """
+
+    SORT_COLUMNS = {
+        'id':         Customer.CustomerID,
+        'first_name': Customer.FirstName,
+        'last_name':  Customer.LastName,
+        'age':        Customer.Age,
+        'country':    Customer.Country,
+    }
+    VALID_DIRECTIONS = {'asc', 'desc'}
+
+    # Read sort parameters from the URL query string
+    sort_by  = request.args.get('sort', 'last_name')
+    sort_dir = request.args.get('dir',  'asc')
+    search = request.args.get('search', '').strip()
+
+    # Fall back to safe defaults if an invalid value is provided
+    if sort_by  not in SORT_COLUMNS:     sort_by  = 'last_name'
+    if sort_dir not in VALID_DIRECTIONS: sort_dir = 'asc'
+
+    column     = SORT_COLUMNS[sort_by]
+    order_expr = column.asc() if sort_dir == 'asc' else column.desc()
+
+    query   = Customer.query
+
+    # Apply search filter across all customer columns
+    if search:
+        term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                Customer.FirstName.ilike(term),
+                Customer.LastName.ilike(term),
+                Customer.Age.ilike(term),
+                Customer.BirthDate.ilike(term),
+                Customer.Country.ilike(term),
+                db.cast(Customer.CustomerID, db.String).ilike(term),
+            )
+        )
+
+    customers = query.order_by(order_expr).all()
+    delete_form = DeleteForm()
+
+    return render_template(
+        'customers/list.html',
+        customers=customers,
+        delete_form=delete_form,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+        search=search,
+    )
 
 
 @app.route('/customers/create', methods=['GET', 'POST'])
@@ -153,10 +214,79 @@ def customer_delete(customer_id):
 
 @app.route('/orders')
 def order_list():
-    """Display all orders ordered by date descending."""
-    orders      = Order.query.order_by(Order.Date.desc()).all()
+    """
+    Display all orders with dynamic sorting.
+
+    Accepts optional query parameters:
+        - sort (str): Column key to sort by. Defaults to 'id'.
+        - dir  (str): Sort direction, either 'asc' or 'desc'. Defaults to 'asc'.
+        - search (str): Optional search string filtered across all relevant columns.
+
+    Returns:
+        Rendered HTML template with the order list and active sort/search state.
+
+    Whitelist of allowed sort keys mapped to (model column, join model).
+    join model is None if the column belongs to the Order table itself.
+    """
+    SORT_COLUMNS = {
+        'id':          (Order.OrderID,      None),
+        'customer':    (Customer.LastName, Customer),
+        'employee':    (Employee.LastName, Employee),
+        'description': (Order.Description, None),
+        'price':       (Order.Price,        None),
+        'amount':      (Order.Amount,       None),
+        'date':        (Order.Date,         None),
+    }
+    VALID_DIRECTIONS = {'asc', 'desc'}
+
+    # Read sort parameters from the URL query string
+    sort_by  = request.args.get('sort', 'id')
+    sort_dir = request.args.get('dir',  'asc')
+    search   = request.args.get('search', '').strip()
+
+    # Fall back to safe defaults if an invalid value is provided
+    if sort_by  not in SORT_COLUMNS:     sort_by  = 'id'
+    if sort_dir not in VALID_DIRECTIONS: sort_dir = 'asc'
+
+    column, join_model = SORT_COLUMNS[sort_by]
+    order_expr = column.asc() if sort_dir == 'asc' else column.desc()
+
+    # Build the query; only JOIN a related table when sorting by its column
+    query = (
+        Order.query
+        .join(Customer)
+        .join(Employee)
+    )
+    '''Apply search filter across all relevant columns using a case-insensitive
+    LIKE match. Each column is cast to String so numeric fields (price,
+    amount) can also be matched against the search term.
+    '''
+    if search:
+        term = f"%{search}%"
+        query = query.filter(
+            db.or_(
+                Customer.FirstName.ilike(term),
+                Customer.LastName.ilike(term),
+                Employee.FirstName.ilike(term),
+                Employee.LastName.ilike(term),
+                Order.Description.ilike(term),
+                db.cast(Order.Price, db.String).ilike(term),
+                db.cast(Order.Amount, db.String).ilike(term),
+                db.cast(Order.Date, db.String).ilike(term),
+            )
+        )
+
+    orders      = query.order_by(order_expr).all()
     delete_form = DeleteForm()
-    return render_template('orders/list.html', orders=orders, delete_form=delete_form)
+
+    return render_template(
+        'orders/list.html',
+        orders=orders,
+        delete_form=delete_form,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+        search=search,
+    )
 
 
 @app.route('/orders/create', methods=['GET', 'POST'])

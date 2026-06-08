@@ -7,6 +7,46 @@
     <a href="{{ url_for('customer_create') }}" class="btn btn-success">+ New Customer</a>
 </div>
 
+<form method="GET" action="{{ url_for('customer_list') }}" class="search-sort-controls">
+
+  {# ── Search bar ── #}
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      name="search"
+      value="{{ search }}"
+      placeholder="Search for keywords..."
+      autocomplete="off"
+    >
+    {% if search %}
+      {# Clear button: resets search but keeps current sort #}
+      <a href="{{ url_for('customer_list', sort=sort_by, dir=sort_dir) }}" class="clear-btn">✕</a>
+    {% endif %}
+  </div>
+
+{# Sort-Steuerung #}
+<form method="GET" action="{{ url_for('customer_list') }}" class="sort-controls">
+  <label for="sort-select">Sortieren nach:</label>
+
+  <select id="sort-select" name="sort" onchange="this.form.submit()">
+    <option value="id"          {% if sort_by == 'id'          %}selected{% endif %}>ID</option>
+    <option value="first_name"  {% if sort_by == 'first_name'    %}selected{% endif %}>FirstName</option>
+    <option value="last_name"   {% if sort_by == 'last_name'    %}selected{% endif %}>LastName</option>
+    <option value="age"         {% if sort_by == 'age' %}selected{% endif %}>Age</option>
+    <option value="country"     {% if sort_by == 'country'      %}selected{% endif %}>Country</option>
+  </select>
+
+  {# Richtungsbutton: wechselt zwischen asc/desc #}
+  <input type="hidden" name="dir"
+         value="{% if sort_dir == 'asc' %}desc{% else %}asc{% endif %}">
+
+  <button type="submit" class="btn btn-secondary btn-sm" title="Richtung wechseln">
+    {% if sort_dir == 'asc' %} ↑ Aufsteigend {% else %} ↓ Absteigend {% endif %}
+  </button>
+</form>
+
+
 <table class="table table-striped table-hover">
     <thead class="table-dark">
         <tr>
