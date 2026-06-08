@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{{ title }}</h2>
+
+<form method="post" novalidate style="max-width: 480px;">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.FirstName.label(class="form-label") }}
+        {{ form.FirstName(class="form-control" + (" is-invalid" if form.FirstName.errors else "")) }}
+        {% for error in form.FirstName.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.LastName.label(class="form-label") }}
+        {{ form.LastName(class="form-control" + (" is-invalid" if form.LastName.errors else "")) }}
+        {% for error in form.LastName.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Age.label(class="form-label") }}
+        {{ form.Age(class="form-control" + (" is-invalid" if form.Age.errors else "")) }}
+        {% for error in form.Age.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.BirthDate.label(class="form-label") }}
+        {{ form.BirthDate(class="form-control" + (" is-invalid" if form.BirthDate.errors else ""),
+                          placeholder="YYYY-MM-DD") }}
+        {% for error in form.BirthDate.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Country.label(class="form-label") }}
+        {{ form.Country(class="form-control" + (" is-invalid" if form.Country.errors else "")) }}
+        {% for error in form.Country.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('customer_list') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}
