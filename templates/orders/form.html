@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{{ title }}</h2>
+
+<form method="post" novalidate style="max-width: 480px;">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.CustomerID.label(class="form-label") }}
+        {{ form.CustomerID(class="form-select" + (" is-invalid" if form.CustomerID.errors else "")) }}
+        {% for error in form.CustomerID.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.EmployeeID.label(class="form-label") }}
+        {{ form.EmployeeID(class="form-select" + (" is-invalid" if form.EmployeeID.errors else "")) }}
+        {% for error in form.EmployeeID.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Description.label(class="form-label") }}
+        {{ form.Description(class="form-control" + (" is-invalid" if form.Description.errors else "")) }}
+        {% for error in form.Description.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Price.label(class="form-label") }}
+        {{ form.Price(class="form-control" + (" is-invalid" if form.Price.errors else "")) }}
+        {% for error in form.Price.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Amount.label(class="form-label") }}
+        {{ form.Amount(class="form-control" + (" is-invalid" if form.Amount.errors else "")) }}
+        {% for error in form.Amount.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        {{ form.Date.label(class="form-label") }}
+        {{ form.Date(class="form-control" + (" is-invalid" if form.Date.errors else ""),
+                     placeholder="YYYY-MM-DD") }}
+        {% for error in form.Date.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+    <a href="{{ url_for('order_list') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+{% endblock %}

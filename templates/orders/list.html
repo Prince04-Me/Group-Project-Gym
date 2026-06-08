@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Orders</h2>
+    <a href="{{ url_for('order_create') }}" class="btn btn-success">+ New Order</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Employee</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>{{ o.OrderID }}</td>
+            <td>{{ o.customer.FirstName }} {{ o.customer.LastName }}</td>
+            <td>{{ o.employee.Name }} {{ o.employee.LastName }}</td>
+            <td>{{ o.Description }}</td>
+            <td>{{ '%.2f' | format(o.Price) }}</td>
+            <td>{{ o.Amount }}</td>
+            <td>{{ o.Date }}</td>
+            <td>
+                <a href="{{ url_for('order_edit', order_id=o.OrderID) }}"
+                   class="btn btn-sm btn-warning">Edit</a>
+
+                <form action="{{ url_for('order_delete', order_id=o.OrderID) }}"
+                      method="post" class="d-inline"
+                      onsubmit="return confirm('Delete order #{{ o.OrderID }}?')">
+                    {{ delete_form.hidden_tag() }}
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="8" class="text-center text-muted">No orders found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
