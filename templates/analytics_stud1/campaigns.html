@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Campaigns{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Navbar styling */
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black; }
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+</style>
+
+<div class="mb-4">
+    <h1 class="fw-bold">📣 Automated Customer Campaigns</h1>
+    <p class="text-muted">Trigger-based customer lists for targeted outreach.</p>
+</div>
+
+<div class="row g-4">
+
+    <!-- Campaign 1: Birthday Reminders -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🎂 Birthday Reminders — {{ current_month }}</h5>
+                <small class="opacity-75">{{ birthday_customers|length }} customer(s) this month</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th>Birth Date</th>
+                            <th>Country</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in birthday_customers %}
+                        <tr>
+                            <td>{{ c.FirstName }} {{ c.LastName }}</td>
+                            <td>{{ c.BirthDate }}</td>
+                            <td>{{ c.Country }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-3">
+                                No birthdays this month.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign 2: Inactive Accounts -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">💤 Inactive Accounts</h5>
+                <small>{{ inactive_customers|length }} customer(s) inactive for 6+ months</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th>Country</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in inactive_customers %}
+                        <tr>
+                            <td>{{ c.FirstName }} {{ c.LastName }}</td>
+                            <td>{{ c.Country }}</td>
+                            <td>{{ c.Age }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-3">
+                                All customers are active. 🎉
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Navbar styling */
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black; }
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+</style>
+
+<div class="mb-4">
+    <h1 class="fw-bold">🏆 Customer Leaderboards</h1>
+    <p class="text-muted">Real-time rankings based on transaction frequency and total revenue.</p>
+</div>
+
+<div class="row g-4">
+
+    <!-- Leaderboard A: Frequency -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🥇 Most Active Customers</h5>
+                <small class="opacity-75">Ranked by number of orders</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th class="text-end">Orders</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rank, c in enumerate(top_frequency, start=1) %}
+                        <tr>
+                            <td>
+                                {% if rank == 1 %}🥇
+                                {% elif rank == 2 %}🥈
+                                {% elif rank == 3 %}🥉
+                                {% else %}{{ rank }}{% endif %}
+                            </td>
+                            <td>{{ c.FirstName }} {{ c.LastName }}</td>
+                            <td class="text-end fw-bold">{{ c.order_count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard B: Revenue -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">💰 Top Spending Customers</h5>
+                <small class="opacity-75">Ranked by total revenue generated</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th class="text-end">Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rank, c in enumerate(top_revenue, start=1) %}
+                        <tr>
+                            <td>
+                                {% if rank == 1 %}🥇
+                                {% elif rank == 2 %}🥈
+                                {% elif rank == 3 %}🥉
+                                {% else %}{{ rank }}{% endif %}
+                        </td>
+                            <td>{{ c.FirstName }} {{ c.LastName }}</td>
+                            <td class="text-end fw-bold">{{ '%.2f'|format(c.total_spent) }} €</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

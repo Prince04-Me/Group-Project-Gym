@@ -34,6 +34,16 @@
         <div class="navbar-nav">
             <a class="nav-link" href="{{ url_for('customer_list') }}">Customers</a>
             <a class="nav-link" href="{{ url_for('order_list') }}">Orders</a>
+            <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+        Analytics
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">📊 Dashboard</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('leaderboard') }}">🏆 Leaderboard</a></li>
+        <li><a class="dropdown-item" href="{{ url_for('campaigns') }}">📣 Campaigns</a></li>
+    </ul>
+</li>
         </div>
     </div>
 </nav>

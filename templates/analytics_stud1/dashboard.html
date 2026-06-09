@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Navbar styling */
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black; }
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+</style>
+
+<div class="mb-4">
+    <h1 class="fw-bold">📊 Customer Analytics Dashboard</h1>
+    <p class="text-muted">Visual insights into customer demographics and spending behaviour.</p>
+</div>
+
+<div class="row g-4">
+
+    <!-- Plot 1: Geographic Distribution -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🌍 Customer Geographic Distribution</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='plots/customer_origin.png') }}"
+                     alt="Customer Geographic Distribution"
+                     class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+
+    <!-- Plot 2: Age Group vs Spending -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">📈 Average Spending by Age Group</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='plots/age_vs_spending.png') }}"
+                     alt="Age Group vs Average Spending"
+                     class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
