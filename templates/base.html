@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Peak Pulse Fitness – {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* Navbar-color */
+    .navbar { background-color: #265A1C !important; }
+
+    /* Button-color */
+    .btn-success { background-color: #265A1C; }
+    .btn-success:hover { background-color: #173711; border-color: #63271B}
+    .btn-danger { background-color: #853529; border-color: #63271B}
+    .btn-secondary { background-color: #C2C2C2; border-color: #AAAAAA}
+    .btn-secondary:hover { background-color: #494949; border-color: dimgrey}
+
+        /* Table-Header */
+    .table thead th { background-color: #265A1C; color: lightgoldenrodyellow; border-style: solid; border-color: white; border-width: 1px; }
+
+</style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">Peak Pulse Fitness</a>
         <div class="navbar-nav">
