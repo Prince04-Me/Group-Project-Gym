@@ -2,6 +2,20 @@
 {% block title %}Customers{% endblock %}
 
 {% block content %}
+
+<style>
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black}
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+    .btn-success { background-color: #265A1C; border-color: darkgray; }
+    .btn-success:hover { background-color: #173711; border-color: darkgray; }
+    .btn-success:active { background-color: #265A1C; border-color: darkgray; transform: translate3d(-1px, 4px, 1px); }
+
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Customers</h2>
     <a href="{{ url_for('customer_create') }}" class="btn btn-success">+ New Customer</a>
@@ -30,10 +44,10 @@
   <label for="sort-select">Sortieren nach:</label>
 
   <select id="sort-select" name="sort" onchange="this.form.submit()">
-    <option value="id"          {% if sort_by == 'id'          %}selected{% endif %}>ID</option>
-    <option value="first_name"  {% if sort_by == 'first_name'    %}selected{% endif %}>FirstName</option>
+    <option value="id"          {% if sort_by == 'id'           %}selected{% endif %}>ID</option>
+    <option value="first_name"  {% if sort_by == 'first_name'   %}selected{% endif %}>FirstName</option>
     <option value="last_name"   {% if sort_by == 'last_name'    %}selected{% endif %}>LastName</option>
-    <option value="age"         {% if sort_by == 'age' %}selected{% endif %}>Age</option>
+    <option value="age"         {% if sort_by == 'age'          %}selected{% endif %}>Age</option>
     <option value="country"     {% if sort_by == 'country'      %}selected{% endif %}>Country</option>
   </select>
 

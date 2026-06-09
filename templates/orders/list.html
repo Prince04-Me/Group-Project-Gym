@@ -2,6 +2,16 @@
 {% block title %}Orders{% endblock %}
 
 {% block content %}
+
+<style>
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black}
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Orders</h2>
     <a href="{{ url_for('order_create') }}" class="btn btn-success">+ New Order</a>
@@ -9,7 +19,7 @@
 
 <form method="GET" action="{{ url_for('order_list') }}" class="search-sort-controls">
 
-  {# ── Search bar ── #}
+    {# Search bar #}
   <div class="search-bar">
     <span class="search-icon">🔍</span>
     <input

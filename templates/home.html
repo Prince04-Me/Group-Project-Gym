@@ -2,12 +2,30 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="py-4">
-    <h1 class="mb-3">Welcome to Peak Pulse Fitness</h1>
-    <p class="lead">Manage customers and orders using the buttons below.</p>
-    <div class="mt-4">
-        <a href="{{ url_for('customer_list') }}" class="btn btn-primary me-2">Manage Customers</a>
-        <a href="{{ url_for('order_list') }}"   class="btn btn-secondary">Manage Orders</a>
+<style xmlns:>
+    /* Button styling */
+    .btn-primary { background-color: #357D26; border-color: darkgray; }
+    .btn-primary:hover { background-color: #265A1C; border-color: darkgray; }
+    .btn-primary:active { background-color: #265A1C; border-color: darkgray; transform: translate3d(-1px, 4px, 1px) }
+
+    .btn-secondary { background-color: #265A1C; border-color: darkgray; }
+    .btn-secondary:hover { background-color: #173711; border-color: darkgray; }
+    .btn-secondary:active { background-color: #265A1C; border-color: darkgray; transform: translate3d(-1px, 4px, 1px); }
+
+    /* Navbar styling */
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black; }
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+</style>
+<div class="py-4 text-center">
+    <h1><span class="mx-auto"> Welcome to </span> <span class="mx-auto fw-bold fst-italic"> Peak Pulse Fitness</span><span class="mx-auto">! </span> </h1>
+    <p class="lead text-center">Manage customers and orders using the buttons below.</p>
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('customer_list') }}" class="btn btn-primary me-2 w-20 shadow"> 👥 Manage Customers</a>
+        <a href="{{ url_for('order_list') }}" class="btn btn-secondary me-2 w-20 shadow"> 🧾 Manage Orders</a>
     </div>
 </div>
 {% endblock %}

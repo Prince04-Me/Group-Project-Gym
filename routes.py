@@ -112,12 +112,12 @@ def customer_list():
     VALID_DIRECTIONS = {'asc', 'desc'}
 
     # Read sort parameters from the URL query string
-    sort_by  = request.args.get('sort', 'last_name')
+    sort_by  = request.args.get('sort', 'id')
     sort_dir = request.args.get('dir',  'asc')
     search = request.args.get('search', '').strip()
 
     # Fall back to safe defaults if an invalid value is provided
-    if sort_by  not in SORT_COLUMNS:     sort_by  = 'last_name'
+    if sort_by  not in SORT_COLUMNS:     sort_by  = 'id'
     if sort_dir not in VALID_DIRECTIONS: sort_dir = 'asc'
 
     column     = SORT_COLUMNS[sort_by]
@@ -230,9 +230,9 @@ def order_list():
     """
     SORT_COLUMNS = {
         'id':          (Order.OrderID,      None),
-        'customer':    (Customer.LastName, Customer),
-        'employee':    (Employee.LastName, Employee),
-        'description': (Order.Description, None),
+        'customer':    (Customer.LastName,  Customer),
+        'employee':    (Employee.LastName,  Employee),
+        'description': (Order.Description,  None),
         'price':       (Order.Price,        None),
         'amount':      (Order.Amount,       None),
         'date':        (Order.Date,         None),

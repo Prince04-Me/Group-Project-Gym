@@ -2,6 +2,25 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
+<style>
+    .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
+    .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black}
+    .navbar .nav-link:hover { color: #AAAAAA; }
+
+    body { background-color: #EEF9EB; }
+
+    /* Button styling */
+    .btn-primary { background-color: #357D26; border-color: darkgray; }
+    .btn-primary:hover { background-color: #265A1C; border-color: darkgray; }
+    .btn-primary:active { background-color: #265A1C; border-color: darkgray; transform: translate3d(-1px, 4px, 1px) }
+
+    .btn-secondary { background-color: #AAAAAA; border-color: darkgray; }
+    .btn-secondary:hover { background-color: #616161; border-color: darkgray; }
+    .btn-secondary:active { background-color: #616161; border-color: darkgray; transform: translate3d(-1px, 4px, 1px); }
+
+</style>
+
 <h2 class="mb-4">{{ title }}</h2>
 
 <form method="post" novalidate style="max-width: 480px;">
