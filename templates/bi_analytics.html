@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Business Intelligence</h1>
+
+<h2>Product Popularity</h2>
+<img src="{{ url_for('static', filename='Top_10_Bestsellers.png') }}">
+
+<h2>Staff Distribution</h2>
+<img src="{{ url_for('static', filename='Staff_Distribution.png') }}">
+
+{% endblock %}

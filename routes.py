@@ -3,7 +3,7 @@
 Defines all URL endpoints and WTForms for the CRUD management UI.
 Imports the shared Flask app instance from __init__.py to register routes.
 """
-from pip._internal.commands import search
+#from pip._internal.commands import search   <-this line shouldn't be here
 
 from __init__ import app, db
 from flask import render_template, redirect, url_for, flash, request
@@ -347,3 +347,10 @@ def order_delete(order_id):
         db.session.commit()
         flash('Order deleted.', 'success')
     return redirect(url_for('order_list'))
+
+"""Task 2A:
+Display of the BI visualizations
+"""
+@app.route('/bi_analytics')
+def analytics():
+    return render_template('bi_analytics.html')
