@@ -48,5 +48,33 @@
         </div>
     </div>
 
+    <!-- Plot 3: Top 10 Bestsellers -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🏆 Top 10 Most Popular Products & Services</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='plots/Top_10_Bestsellers.png') }}"
+                     alt="Top 10 Most Popular Products & Services"
+                     class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+
+    <!-- Plot 4: Staff Distribution by Department -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🏢 Staff Distribution by Department</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='plots/Staff_Distribution.png') }}"
+                     alt="Staff Distribution by Department"
+                     class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}

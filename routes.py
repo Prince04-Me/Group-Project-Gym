@@ -3,11 +3,8 @@
 Defines all URL endpoints and WTForms for the CRUD management UI.
 Imports the shared Flask app instance from __init__.py to register routes.
 """
-from pip._internal.commands import search
-
 from flask import render_template, redirect, url_for, flash, request
 from db import db
-from flask import render_template, redirect, url_for, flash, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, FloatField, IntegerField
 from wtforms.validators import DataRequired
@@ -16,14 +13,19 @@ from models import Customer, Employee, Order
 
 from __init__ import app
 
-# for Student 1 Focus:
-import os
-import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-from sqlalchemy import func
+# All analytics query logic (plots, leaderboards, campaigns,
+# recommendations) lives in analytics.py; routes.py just calls it and
+# renders the templates.
+from analytics import (
+    generate_dashboard_plots,
+    generate_sales_and_staff_plots,
+    get_customer_leaderboards,
+    get_staff_leaderboard,
+    get_department_leaderboard,
+    get_campaign_data,
+    get_product_recommendations,
+    get_low_performing_products,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -364,108 +366,31 @@ def order_delete(order_id):
 @app.route('/dashboard')
 def dashboard():
     generate_dashboard_plots()
+    generate_sales_and_staff_plots()
 
     return render_template('analytics_stud1/dashboard.html')
 
 
-# for Student 1 Focus:
-def generate_dashboard_plots():
-    """
-    Generate and save both dashboard plots as PNG files to static/plots/.
-
-    Uses SQLAlchemy connection directly (compatible with Pandas 2.x+).
-    Plot 1: Customer geographic distribution (bar chart by country).
-    Plot 2: Age group vs. average spending (bar chart).
-    """
-    plots_dir = os.path.join(os.path.dirname(__file__),'Student1_Focus_plots', 'static', 'plots')
-    os.makedirs(plots_dir, exist_ok=True)
-
-    engine = db.get_engine()
-    with engine.connect() as conn:
-        customers = pd.read_sql_table('Customer_data', conn)
-        orders = pd.read_sql_table('Order_data', conn)
-
-
-
-    # Plot 1: Customer origin bar chart
-    country_counts = customers['Country'].value_counts()
-
-    fig, ax = plt.subplots(figsize=(8,4))
-    country_counts.plot(kind='bar', ax=ax, color='#2d6a2d', edgecolor='white')
-    ax.set_title('Customer Geographic Distribution', fontsize=14, fontweight='bold')
-    ax.set_xlabel('Country')
-    ax.set_ylabel('Number of Customers')
-    ax.tick_params(axis='x', rotation=45)
-    plt.tight_layout()
-    fig.savefig(os.path.join(plots_dir, 'customer_origin.png'), dpi=120)
-    plt.close(fig)
-
-
-
-    # Plot 2: Age Group vs. Average Spending
-    merged = orders.merge(customers[['CustomerID', 'Age']], on='CustomerID', how='left')
-
-    # Calculate total spending per order row (Price × Amount)
-    merged['total'] = merged['Price'] * merged['Amount']
-
-    # Group customers into age buckets
-    bins   = [0, 18, 25, 35, 45, 55, 100]
-    labels = ['<18', '18-25', '26-35', '36-45', '46-55', '55+']
-    merged['age_group'] = pd.cut(merged['Age'], bins=bins, labels=labels, right=True)
-
-    # Calculate average total spending per age group
-    age_spending = merged.groupby('age_group', observed=True)['total'].mean()
-
-    fig, ax = plt.subplots(figsize=(8, 4))
-    age_spending.plot(kind='bar', ax=ax, color='#f0a500', edgecolor='white')
-    ax.set_title('Average Spending by Age Group', fontsize=14, fontweight='bold')
-    ax.set_xlabel('Age Group')
-    ax.set_ylabel('Average Order Value (€)')
-    ax.tick_params(axis='x', rotation=0)
-    plt.tight_layout()
-    fig.savefig(os.path.join(plots_dir, 'age_vs_spending.png'), dpi=120)
-    plt.close(fig)
-
 @app.route('/leaderboard')
 def leaderboard():
     """
-    Render the customer leaderboard page.
+    Render the customer, staff, and department leaderboard page.
 
     Leaderboard A: Top customers by number of orders (frequency).
     Leaderboard B: Top customers by total revenue generated (spending).
+    Leaderboard C: Top staff by number of transactions processed.
+    Leaderboard D: Top departments by total revenue generated.
     """
-    # Leaderboard A: top 10 customers by transaction count
-    top_frequency = (
-        db.session.query(
-            Customer.FirstName,
-            Customer.LastName,
-            func.count(Order.OrderID).label('order_count')
-        )
-        .join(Order, Order.CustomerID == Customer.CustomerID)
-        .group_by(Customer.CustomerID)
-        .order_by(func.count(Order.OrderID).desc())
-        .limit(10)
-        .all()
-    )
-
-    # Leaderboard B: top 10 customers by total revenue (Price × Amount)
-    top_revenue = (
-        db.session.query(
-            Customer.FirstName,
-            Customer.LastName,
-            func.sum(Order.Price * Order.Amount).label('total_spent')
-        )
-        .join(Order, Order.CustomerID == Customer.CustomerID)
-        .group_by(Customer.CustomerID)
-        .order_by(func.sum(Order.Price * Order.Amount).desc())
-        .limit(10)
-        .all()
-    )
+    top_frequency, top_revenue = get_customer_leaderboards()
+    top_staff = get_staff_leaderboard()
+    top_departments = get_department_leaderboard()
 
     return render_template(
         'analytics_stud1/leaderboard.html',
         top_frequency=top_frequency,
         top_revenue=top_revenue,
+        top_staff=top_staff,
+        top_departments=top_departments,
     )
 
 @app.route('/campaigns')
@@ -477,36 +402,18 @@ def campaigns():
                 matches the current calendar month.
     Campaign 2: Inactive accounts — customers with no orders
                 in the past 6 months.
+    Campaign 3: Personalized product recommendations (rule-based).
+    Campaign 4: Low-performing products that need marketing support.
     """
-    today         = datetime.today()
-    current_month = today.month
-    cutoff_date   = today - timedelta(days=182)  # ~6 months ago
-
-    all_customers = Customer.query.all()
-    all_orders    = Order.query.all()
-
-    # Campaign 1: match birth month against current month using string slicing.
-    # BirthDate format is 'YYYY-MM-DD', so [5:7] extracts the month as a string.
-    birthday_customers = [
-        c for c in all_customers
-        if c.BirthDate and int(c.BirthDate[5:7]) == current_month
-    ]
-
-    # Build a set of CustomerIDs that have at least one recent order
-    active_ids = {
-        o.CustomerID for o in all_orders
-        if o.Date and datetime.strptime(o.Date, '%Y-%m-%d') >= cutoff_date
-    }
-
-    # Campaign 2: customers NOT in the active set are considered inactive
-    inactive_customers = [
-        c for c in all_customers
-        if c.CustomerID not in active_ids
-    ]
+    campaign_data   = get_campaign_data()
+    recommendations = get_product_recommendations()
+    low_performers  = get_low_performing_products()
 
     return render_template(
         'analytics_stud1/campaigns.html',
-        birthday_customers=birthday_customers,
-        inactive_customers=inactive_customers,
-        current_month=today.strftime('%B'),   # e.g. "June"
+        birthday_customers=campaign_data['birthday_customers'],
+        inactive_customers=campaign_data['inactive_customers'],
+        current_month=campaign_data['current_month'],
+        recommendations=recommendations,
+        low_performers=low_performers,
     )

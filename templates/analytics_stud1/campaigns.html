@@ -1,25 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Campaigns{% endblock %}
-
 {% block content %}
-
 <style>
     /* Navbar styling */
     .navbar-brand { font-size: xx-large; color: #C2C2C2; font-family: ASTERA; -webkit-text-stroke: 0.75px black; }
     .navbar .nav-link { color: whitesmoke; font-weight: 500; -webkit-text-stroke: 0.15px black; }
     .navbar .nav-link:hover { color: #AAAAAA; }
-
     body { background-color: #EEF9EB; }
-
 </style>
-
 <div class="mb-4">
     <h1 class="fw-bold">📣 Automated Customer Campaigns</h1>
     <p class="text-muted">Trigger-based customer lists for targeted outreach.</p>
 </div>
-
 <div class="row g-4">
-
     <!-- Campaign 1: Birthday Reminders -->
     <div class="col-md-6">
         <div class="card shadow-sm border-0 h-100">
@@ -55,7 +48,6 @@
             </div>
         </div>
     </div>
-
     <!-- Campaign 2: Inactive Accounts -->
     <div class="col-md-6">
         <div class="card shadow-sm border-0 h-100">
@@ -91,6 +83,85 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="row g-4 mt-1">
+    <!-- Campaign 3: Personalized Product Recommendations -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🎯 Personalized Product Recommendations</h5>
+                <small class="opacity-75">Rule-based suggestions for every customer — frequently-bought-together for repeat buyers, bestsellers for new ones</small>
+            </div>
+            <div class="card-body p-0" style="max-height: 420px; overflow-y: auto;">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th>Suggested Items</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in recommendations %}
+                        <tr>
+                            <td>{{ rec.customer.FirstName }} {{ rec.customer.LastName }}</td>
+                            <td>
+                                {% for item in rec.recommendations %}
+                                <span class="badge bg-success me-1 mb-1">{{ item }}</span>
+                                {% else %}
+                                <span class="text-muted">No suggestions available</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-3">
+                                No customers found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <!-- Campaign 4: Low-Performing Products -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">📉 Products Needing Marketing Support</h5>
+                <small class="opacity-75">Lowest-selling products/services by total units sold</small>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Product / Service</th>
+                            <th class="text-end">Total Units Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rank, p in enumerate(low_performers, start=1) %}
+                        <tr>
+                            <td>{{ rank }}</td>
+                            <td>{{ p.description }}</td>
+                            <td class="text-end fw-bold">{{ p.total_units }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-3">
+                                No product data available.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
