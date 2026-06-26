@@ -1,15 +1,3 @@
-"""Sales, staff, and leaderboard analytics for Peak Pulse Fitness.
-
-Two kinds of analytics live here:
-  - Chart generation, saved as static PNG files (customer geography/spending,
-    bestsellers, staff distribution by department).
-  - Leaderboard queries (customers, staff, departments), returned as plain
-    query results for the leaderboard template to render.
-
-Reuses the app's shared SQLAlchemy engine/session (see db.py) instead of
-opening separate connections, so there is a single source of truth for the
-database across the whole app.
-"""
 """Sales, staff, leaderboard, and campaign analytics for Peak Pulse Fitness.
 
 Several kinds of analytics live here:
@@ -20,7 +8,7 @@ Several kinds of analytics live here:
     low-performing products).
 
 All return plain query results / lists / dicts for routes.py to pass
-straight into render_template — no query logic belongs in routes.py.
+straight into render_template
 
 Reuses the app's shared SQLAlchemy engine/session (see db.py) instead of
 opening separate connections, so there is a single source of truth for the
@@ -40,19 +28,14 @@ from sqlalchemy import func
 from db import db
 from models import Customer, Employee, Order
 
-# Department names aren't stored in their own lookup table, so known IDs
-# are mapped here by hand. Any DepartmentID not listed below falls back to
-# "Department <id>" instead of being silently dropped from the chart.
+# Identifying and mapping the departments
 DEPARTMENT_NAMES = {
     100: 'Executive',
     101: 'Department 101',
     102: 'Department 102',
 }
 
-# Plots are saved into the app's single registered static folder (see
-# __init__.py: static_folder='Student1_Focus_plots/static') so they can be
-# referenced with the same url_for('static', filename='plots/...') pattern
-# already used for the other dashboard charts.
+# All plots stored in one folder
 PLOTS_DIR = os.path.join(
     os.path.dirname(__file__), 'Student1_Focus_plots', 'static', 'plots'
 )
@@ -115,9 +98,6 @@ def generate_sales_and_staff_plots():
 
     Plot 1: Top 10 best-selling products/services by total units sold.
     Plot 2: Staff distribution by department.
-
-    Must be called within an active Flask app context, since it uses
-    db.get_engine() to reach the database.
     """
     os.makedirs(PLOTS_DIR, exist_ok=True)
     engine = db.get_engine()
@@ -161,23 +141,12 @@ def generate_sales_and_staff_plots():
     fig1.savefig(os.path.join(PLOTS_DIR, 'Staff_Distribution.png'), dpi=120)
     plt.close(fig1)
 
-
 # ---------------------------------------------------------------------------
-# Leaderboard queries
+#Leaderboard queries
 # ---------------------------------------------------------------------------
-
-# Lightweight container for department-revenue rows, so the template can use
-# the same dot-access style (d.department, d.total_revenue) as the other
-# leaderboards instead of indexing into a plain tuple.
-DepartmentRevenue = namedtuple('DepartmentRevenue', ['department', 'total_revenue'])
-
 
 def get_customer_leaderboards():
-    """Return the top 10 customers by order frequency and by total revenue.
-
-    Returns:
-        A (top_frequency, top_revenue) tuple of SQLAlchemy result rows.
-    """
+# Return the top 10 customers by order frequency and by total revenue.
     top_frequency = (
         db.session.query(
             Customer.FirstName,
@@ -208,7 +177,7 @@ def get_customer_leaderboards():
 
 
 def get_staff_leaderboard():
-    """Return the top 10 employees ranked by number of transactions processed."""
+#Return the top 10 employees ranked by number of transactions processed.
     return (
         db.session.query(
             Employee.FirstName,
@@ -250,7 +219,6 @@ def get_department_leaderboard():
         )
         for department_id, total_revenue in rows
     ]
-
 
 # ---------------------------------------------------------------------------
 # Campaign data
@@ -304,7 +272,6 @@ def get_campaign_data():
 # Rule-based recommendation engine
 # ---------------------------------------------------------------------------
 
-# Lightweight container so the template can use customer.recommendations
 # dot-access instead of indexing into a plain dict.
 CustomerRecommendation = namedtuple('CustomerRecommendation', ['customer', 'recommendations'])
 ProductPerformance     = namedtuple('ProductPerformance', ['description', 'total_units'])

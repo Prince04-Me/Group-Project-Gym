@@ -9,7 +9,7 @@ from db import db
 
 
 class Customer(db.Model):
-    """Represents a gym customer (Table A — primary entity).
+    """Represents a gym customer
 
     Attributes:
         CustomerID: Primary key.
@@ -34,8 +34,7 @@ class Customer(db.Model):
 
 
 class Employee(db.Model):
-    """Represents a gym employee (Table C — resource data).
-
+    """Represents a gym employee
     Attributes:
         EmployeeID:   Primary key.
         Name:         First name.
@@ -72,7 +71,7 @@ class Employee(db.Model):
 
 
 class Order(db.Model):
-    """Represents a gym service order (Table B — transaction data).
+    """Represents a gym service order
 
     Links a Customer to an Employee for a specific service purchase.
 

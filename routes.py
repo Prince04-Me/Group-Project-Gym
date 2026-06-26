@@ -27,7 +27,6 @@ from analytics import (
     get_low_performing_products,
 )
 
-
 # ---------------------------------------------------------------------------
 # Forms
 # ---------------------------------------------------------------------------
@@ -60,10 +59,9 @@ class OrderForm(FlaskForm):
 
 
 class DeleteForm(FlaskForm):
-    """Minimal form used solely to provide CSRF protection for delete buttons."""
+    #Minimal form used solely to provide CSRF protection for delete buttons.
 
     submit = SubmitField('Delete')
-
 
 # ---------------------------------------------------------------------------
 # Helper
@@ -84,17 +82,15 @@ def _populate_order_choices(form):
         for e in Employee.query.order_by(Employee.LastName).all()
     ]
 
-
 # ---------------------------------------------------------------------------
 # General
 # ---------------------------------------------------------------------------
 
 @app.route('/')
 def home():
-    """Render the home page.
-    """
-    return render_template('home.html')
+    #Render the home page.
 
+    return render_template('home.html')
 
 # ---------------------------------------------------------------------------
 # Customer CRUD
