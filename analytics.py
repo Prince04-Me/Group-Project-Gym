@@ -191,7 +191,7 @@ def get_staff_leaderboard():
         .all()
     )
 
-
+DepartmentRevenue = namedtuple('DepartmentRevenue', ['department', 'total_revenue'])
 def get_department_leaderboard():
     """Return departments ranked by total revenue generated.
 
