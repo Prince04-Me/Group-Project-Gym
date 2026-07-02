@@ -8,7 +8,7 @@ from config import Config
 from db import db
 from flask_migrate import Migrate
 
-app = Flask(__name__, static_folder='Student1_Focus_plots/static')
+app = Flask(__name__, static_folder='statics/plots')
 app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)

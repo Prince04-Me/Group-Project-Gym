@@ -37,7 +37,7 @@ DEPARTMENT_NAMES = {
 
 # All plots stored in one folder
 PLOTS_DIR = os.path.join(
-    os.path.dirname(__file__), 'Student1_Focus_plots', 'static', 'plots'
+    os.path.dirname(__file__), 'statics', 'plots'
 )
 
 
