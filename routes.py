@@ -364,7 +364,7 @@ def dashboard():
     generate_dashboard_plots()
     generate_sales_and_staff_plots()
 
-    return render_template('analytics_stud1/dashboard.html')
+    return render_template('analytics/dashboard.html')
 
 
 @app.route('/leaderboard')
@@ -382,7 +382,7 @@ def leaderboard():
     top_departments = get_department_leaderboard()
 
     return render_template(
-        'analytics_stud1/leaderboard.html',
+        'analytics/leaderboard.html',
         top_frequency=top_frequency,
         top_revenue=top_revenue,
         top_staff=top_staff,
@@ -406,7 +406,7 @@ def campaigns():
     low_performers  = get_low_performing_products()
 
     return render_template(
-        'analytics_stud1/campaigns.html',
+        'analytics/campaigns.html',
         birthday_customers=campaign_data['birthday_customers'],
         inactive_customers=campaign_data['inactive_customers'],
         current_month=campaign_data['current_month'],
