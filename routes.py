@@ -13,9 +13,10 @@ from models import Customer, Employee, Order
 
 from __init__ import app
 
-# All analytics query logic (plots, leaderboards, campaigns,
-# recommendations) lives in analytics.py; routes.py just calls it and
-# renders the templates.
+"""All analytics query logic (plots, leaderboards, campaigns,
+recommendations) lives in analytics.py; routes.py just calls it and
+renders the templates.
+"""
 from analytics import (
     generate_dashboard_plots,
     generate_sales_and_staff_plots,
@@ -32,7 +33,7 @@ from analytics import (
 # ---------------------------------------------------------------------------
 
 class CustomerForm(FlaskForm):
-    """WTForm for creating and editing a Customer record."""
+    # WTForm for creating and editing a Customer record.
 
     FirstName = StringField('First Name', validators=[DataRequired()])
     LastName  = StringField('Last Name',  validators=[DataRequired()])
@@ -165,7 +166,7 @@ def customer_list():
 
 @app.route('/customers/create', methods=['GET', 'POST'])
 def customer_create():
-    """Show and process the create-customer form."""
+    #Show and process the create-customer form.
     form = CustomerForm()
     if form.validate_on_submit():
         customer = Customer(
@@ -302,7 +303,7 @@ def order_list():
 
 @app.route('/orders/create', methods=['GET', 'POST'])
 def order_create():
-    """Show and process the create-order form."""
+    #Show and process the create-order form.
     form = OrderForm()
     _populate_order_choices(form)
     if form.validate_on_submit():
