@@ -3,15 +3,16 @@
 Defines all URL endpoints and WTForms for the CRUD management UI.
 Imports the shared Flask app instance from __init__.py to register routes.
 """
-from flask import render_template, redirect, url_for, flash, request
 from db import db
-from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, FloatField, IntegerField
-from wtforms.validators import DataRequired
 
 from models import Customer, Employee, Order
 
 from __init__ import app
+
+from flask import render_template, redirect, url_for, flash, request
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SubmitField, FloatField, IntegerField
+from wtforms.validators import DataRequired
 
 """All analytics query logic (plots, leaderboards, campaigns,
 recommendations) lives in analytics.py; routes.py just calls it and
@@ -60,7 +61,7 @@ class OrderForm(FlaskForm):
 
 
 class DeleteForm(FlaskForm):
-    #Minimal form used solely to provide CSRF protection for delete buttons.
+    # Minimal form used solely to provide CSRF protection for delete buttons.
 
     submit = SubmitField('Delete')
 
@@ -166,7 +167,7 @@ def customer_list():
 
 @app.route('/customers/create', methods=['GET', 'POST'])
 def customer_create():
-    #Show and process the create-customer form.
+    # Show and process the create-customer form.
     form = CustomerForm()
     if form.validate_on_submit():
         customer = Customer(

@@ -7,7 +7,6 @@ Maps the three existing database tables to Python classes:
 """
 from db import db
 
-
 class Customer(db.Model):
     """Represents a gym customer
 

@@ -15,18 +15,22 @@ opening separate connections, so there is a single source of truth for the
 database across the whole app.
 """
 import os
+
+from db import db
+
+from models import Customer, Employee, Order
+
 from collections import namedtuple, defaultdict
 from datetime import datetime, timedelta
 from itertools import combinations
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import pandas as pd
 from sqlalchemy import func
 
-from db import db
-from models import Customer, Employee, Order
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.use('Agg')
 
 # Identifying and mapping the departments
 DEPARTMENT_NAMES = {
@@ -36,9 +40,7 @@ DEPARTMENT_NAMES = {
 }
 
 # All plots stored in one folder
-PLOTS_DIR = os.path.join(
-    os.path.dirname(__file__), 'statics', 'plots'
-)
+PLOTS_DIR = os.path.join(os.path.dirname(__file__), 'statics', 'plots')
 
 
 def generate_dashboard_plots():
@@ -68,26 +70,33 @@ def generate_dashboard_plots():
     fig.savefig(os.path.join(PLOTS_DIR, 'customer_origin.png'), dpi=120)
     plt.close(fig)
 
-    # Plot 2: Age Group vs. Average Spending
-    merged = orders.merge(customers[['CustomerID', 'Age']], on='CustomerID', how='left')
+    # --- Plot 2: Age vs. spending (scatter plot) --------------------------
 
-    # Calculate total spending per order row (Price × Amount)
-    merged['total'] = merged['Price'] * merged['Amount']
+    # Merge orders with customer age so each order row carries the buyer's age.
+    merged = orders.merge(
+        customers[['CustomerID', 'Age']], on='CustomerID', how='left'
+    )
+    # Total value of a single order = unit price * quantity ordered.
+    merged['OrderTotal'] = merged['Price'] * merged['Amount']
 
-    # Group customers into age buckets
-    bins   = [0, 18, 25, 35, 45, 55, 100]
-    labels = ['<18', '18-25', '26-35', '36-45', '46-55', '55+']
-    merged['age_group'] = pd.cut(merged['Age'], bins=bins, labels=labels, right=True)
-
-    # Calculate average total spending per age group
-    age_spending = merged.groupby('age_group', observed=True)['total'].mean()
+    # Aggregate to one point per customer: age vs. their total spending.
+    customer_spending = (
+        merged.groupby(['CustomerID', 'Age'], as_index=False)['OrderTotal']
+        .sum()
+        .rename(columns={'OrderTotal': 'TotalSpending'})
+    )
 
     fig, ax = plt.subplots(figsize=(8, 4))
-    age_spending.plot(kind='bar', ax=ax, color='#f0a500', edgecolor='white')
-    ax.set_title('Average Spending by Age Group', fontsize=14, fontweight='bold')
-    ax.set_xlabel('Age Group')
-    ax.set_ylabel('Average Order Value (€)')
-    ax.tick_params(axis='x', rotation=0)
+    ax.scatter(
+        customer_spending["Age"],
+        customer_spending["TotalSpending"],
+        color="#f0a500",
+        edgecolor="black",
+        alpha=0.7,
+    )
+    ax.set_title('Customer Age vs. Total Spending', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Customer Age')
+    ax.set_ylabel('Total Spending')
     plt.tight_layout()
     fig.savefig(os.path.join(PLOTS_DIR, 'age_vs_spending.png'), dpi=120)
     plt.close(fig)
@@ -117,8 +126,9 @@ def generate_sales_and_staff_plots():
             GROUP BY DepartmentID;
         ''', conn)
 
-    # Plot 1: Top 10 bestsellers. Horizontal bars suit long product names;
-    # invert the y-axis so the best seller appears at the top.
+    """Plot 1: Top 10 bestsellers. Horizontal bars suit long product names,
+    invert the y-axis so the best seller appears at the top.
+    """
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.barh(bestsellers['Description'], bestsellers['Total'])
     ax.invert_yaxis()
@@ -230,10 +240,6 @@ def get_campaign_data():
     Campaign 1: customers whose birth month matches the current calendar
                 month.
     Campaign 2: customers with no orders in the past 6 months.
-
-    Returns:
-        A dict with 'birthday_customers', 'inactive_customers', and
-        'current_month' (e.g. "June").
     """
     today         = datetime.today()
     current_month = today.month
@@ -242,8 +248,6 @@ def get_campaign_data():
     all_customers = Customer.query.all()
     all_orders    = Order.query.all()
 
-    # Match birth month against current month using string slicing.
-    # BirthDate format is 'YYYY-MM-DD', so [5:7] extracts the month as a string.
     birthday_customers = [
         c for c in all_customers
         if c.BirthDate and int(c.BirthDate[5:7]) == current_month
@@ -278,7 +282,7 @@ ProductPerformance     = namedtuple('ProductPerformance', ['description', 'total
 
 
 def _bestseller_ranking(item_total_qty):
-    """Rank items by total units sold: quantity descending, name ascending on ties."""
+    # Rank items by total units sold: quantity descending, name ascending on ties.
     return [
         item for item, _ in sorted(
             item_total_qty.items(), key=lambda kv: (-kv[1], kv[0])
