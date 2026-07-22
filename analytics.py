@@ -152,7 +152,7 @@ def generate_sales_and_staff_plots():
     plt.close(fig1)
 
 # ---------------------------------------------------------------------------
-#Leaderboard queries
+# Leaderboard queries
 # ---------------------------------------------------------------------------
 
 def get_customer_leaderboards():
@@ -187,7 +187,7 @@ def get_customer_leaderboards():
 
 
 def get_staff_leaderboard():
-#Return the top 10 employees ranked by number of transactions processed.
+# Return the top 10 employees ranked by number of transactions processed.
     return (
         db.session.query(
             Employee.FirstName,
@@ -202,6 +202,7 @@ def get_staff_leaderboard():
     )
 
 DepartmentRevenue = namedtuple('DepartmentRevenue', ['department', 'total_revenue'])
+
 def get_department_leaderboard():
     """Return departments ranked by total revenue generated.
 
